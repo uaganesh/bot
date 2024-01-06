@@ -16,7 +16,7 @@ const channelUsername = "@mbbsrussiaadmission"; // Use '@' for channels with use
 // Get Messages From KTU Website
 const instance = axios.create({
   baseURL: "https://api.ktu.edu.in/ktu-web-portal-api/anon", // Set a base URL for all requests
-  timeout: 20000, // Set a timeout for requests in milliseconds
+  timeout: 50000, // Set a timeout for requests in milliseconds
   headers: {
     "Content-Type": "application/json",
   },
