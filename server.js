@@ -5,6 +5,7 @@ const axios = require("axios");
 const { Telegraf } = require("telegraf");
 const dotenv=require("dotenv")
 const moment = require("moment");
+const { log } = require("console");
 dotenv.config({path:"./config/config.env"})
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -15,7 +16,7 @@ const channelUsername = "@mbbsrussiaadmission"; // Use '@' for channels with use
 // Get Messages From KTU Website
 const instance = axios.create({
   baseURL: "https://api.ktu.edu.in/ktu-web-portal-api/anon", // Set a base URL for all requests
-  timeout: 10000, // Set a timeout for requests in milliseconds
+  timeout: 20000, // Set a timeout for requests in milliseconds
   headers: {
     "Content-Type": "application/json",
   },
@@ -28,7 +29,7 @@ var notifyid = "2375";
 async function sendMessage(messageText,sendQuery,filename,ktu) {
     try {
       // Send the message to the channel
-      bot.telegram.sendMessage(channelUsername, messageText, {
+      await bot.telegram.sendMessage(channelUsername, messageText, {
         parse_mode: "Markdown",
       });
       console.log("New Notification Found , Message Sent");
@@ -65,14 +66,16 @@ async function sendMessage(messageText,sendQuery,filename,ktu) {
   }
 
 
-setInterval(function () {
+setInterval(async function() {
+
+  try{
 
   let postData = { number: 0, searchText: "MCA", size: 1 };
 
   instance
     .post("/announcemnts", postData)
     //   .get("http://localhost:3000/ktu")
-    .then((response) => {
+    .then(async (response) => {
       //    console.log(response.data.content[0]);
       //    console.log(response.data.message.content[0]) //Testing
       //    let ktu=response.data.message.content[0];
@@ -105,7 +108,7 @@ setInterval(function () {
     📌 Channel:t.me/keralamcastudents\n\n`;
 
     // --------------------------------------------------------------------------
-    sendMessage(messageText,sendQuery,filename,ktu);
+    await sendMessage(messageText,sendQuery,filename,ktu);
     notifyid = ktu.id;
    } 
    else
@@ -114,8 +117,15 @@ setInterval(function () {
    }
     })
     .catch((error) => {
+
       console.error("Error: Error While Requesting Resource", error.message);
+
     });
+   }
+    catch(err)
+    {
+      console.log("error occured in the setinterval function",err);
+    }
 }, 10000);
 
 bot.launch();
