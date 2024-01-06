@@ -70,7 +70,7 @@ setInterval(async function() {
 
   try{
 
-  let postData = { number: 0, searchText: "MCA", size: 1 };
+  let postData = { number: 0, searchText: "", size: 1 };
 
   instance
     .post("/announcemnts", postData)
